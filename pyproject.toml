@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "labb"
+version = "0.1.1"
+description = "Stepanov Leonid IVT-b-o-22-1"
+authors = ["Your Name <you@example.com>"]
+license = "MIT LICENSE"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.9.18"
+pre-commit = "^3.7.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.2.0"
+isort = "^5.13.2"
+flake8 = "^7.0.0"
+
+[tool.black]
+line-length = 79
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
