@@ -1,61 +1,82 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Для своего индивидуального задания лабораторной работы 2.23
-# необходимо реализовать
-# вычисление значений в двух функций в отдельных процессах.
+# Для своего индивидуального задания лабораторной работы 2.23 
+# необходимо реализовать вычисление значений в двух 
+# функций в отдельных процессах.
+
+# Вариант 1 и 2
 
 import math
 from multiprocessing import Process, Queue
-from threading import Barrier, Thread
 
 E = 10e-7
-br = Barrier(4)
-results = [1]
-local_results = Queue()
 
 
-def calculate_sum(x):
-    return 3**x
+# 1 Вариант
+def calculate_row_1(target, x, conditional_var):
+    def calculate_nextpart(results, x, cur):
+        return results[-1] * x * math.log(3) / cur
 
-
-def calculate_part(x, cur, result_queue):
+    i = 0
     local_result = [1]
+    while local_result[i] > E:
+        local_result.append(calculate_nextpart(local_result, x, i + 1))
+        i += 1
 
-    def my_log(local_result):
-        local_result[0] *= math.pow(math.log(3), cur)
-        br.wait()
+    conditional_var.put(sum(local_result))
 
-    def my_pow(local_result):
-        local_result[0] *= x**cur
-        br.wait()
 
-    def my_fact(local_result):
-        local_result[0] /= math.factorial(cur)
-        br.wait()
+# 2 Вариант
+def calculate_row_2(target, x, conditional_var):
+    def calculate_nextpart(results, x):
+        return results[-1] * x
 
-    Thread(target=my_log, args=(local_result,)).start()
-    Thread(target=my_pow, args=(local_result,)).start()
-    Thread(target=my_fact, args=(local_result,)).start()
+    i = 0
+    local_result = [1]
+    while local_result[i] > E:
+        local_result.append(calculate_nextpart(local_result, x))
+        i += 1
 
-    br.wait()
-    result_queue.put(local_result[0])
+    conditional_var.put(sum(local_result))
+
+
+def check_results(target, x1, x2):
+    def control_value_1(x):
+        return 3**x
+
+    def control_value_2(x):
+        return round(1 / (1 - x), 4)
+
+    print(
+        f'Различие найденной суммы с контрольным значением {control_value_1(x1) - target.get("sum_row_1")}'
+    )
+    print(
+        f'Различие найденной суммы с контрольным значением {control_value_2(x2) - target.get("sum_row_2")}'
+    )
+    print(f"Результат {target}")
 
 
 def main():
-    x = 3
-    i = 0
+    conditional_var = Queue()
 
-    while not (round(sum(results), 5) == calculate_sum(x)):
-        Process(target=calculate_part, args=(x, i + 1, local_results)).start()
-        results.append(local_results.get())
-        i += 1
+    part_of_rows = {"sum_row_1": 0, "sum_row_2": 0}
 
-    print(results)
-    print(f"x = {x}")
-    print(round(sum(results), 5))
-    print(round(sum(results), 5) == calculate_sum(x))
+    p1 = Process(target=calculate_row_1, args=(part_of_rows, 1, conditional_var))
+    p2 = Process(target=calculate_row_2, args=(part_of_rows, 0.7, conditional_var))
+    p3 = Process(target=check_results, args=(part_of_rows, 1, 0.7))
 
+    p1.start()
+    p2.start()
+    p1.join()
+    p2.join()
+
+    part_of_rows["sum_row_1"] = conditional_var.get()
+    part_of_rows["sum_row_2"] = conditional_var.get()
+    
+    p3.start()
+    
+    
 
 if __name__ == "__main__":
     main()
