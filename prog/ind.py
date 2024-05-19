@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Для своего индивидуального задания лабораторной работы 2.23 
-# необходимо реализовать вычисление значений в двух 
+# Для своего индивидуального задания лабораторной работы 2.23
+# необходимо реализовать вычисление значений в двух
 # функций в отдельных процессах.
 
 # Вариант 1 и 2
@@ -62,8 +62,12 @@ def main():
 
     part_of_rows = {"sum_row_1": 0, "sum_row_2": 0}
 
-    p1 = Process(target=calculate_row_1, args=(part_of_rows, 1, conditional_var))
-    p2 = Process(target=calculate_row_2, args=(part_of_rows, 0.7, conditional_var))
+    p1 = Process(
+        target=calculate_row_1, args=(part_of_rows, 1, conditional_var)
+    )
+    p2 = Process(
+        target=calculate_row_2, args=(part_of_rows, 0.7, conditional_var)
+    )
     p3 = Process(target=check_results, args=(part_of_rows, 1, 0.7))
 
     p1.start()
@@ -73,10 +77,9 @@ def main():
 
     part_of_rows["sum_row_1"] = conditional_var.get()
     part_of_rows["sum_row_2"] = conditional_var.get()
-    
+
     p3.start()
-    
-    
+
 
 if __name__ == "__main__":
     main()
