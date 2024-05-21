@@ -49,10 +49,12 @@ def check_results(target, x1, x2):
         return round(1 / (1 - x), 4)
 
     print(
-        f'Различие найденной суммы с контрольным значением {control_value_1(x1) - target.get("sum_row_1")}'
+        f'Различие найденной суммы с контрольным значением \n
+            {control_value_1(x1) - target.get("sum_row_1")}'
     )
     print(
-        f'Различие найденной суммы с контрольным значением {control_value_2(x2) - target.get("sum_row_2")}'
+        f'Различие найденной суммы с контрольным значением \n
+            {control_value_2(x2) - target.get("sum_row_2")}'
     )
     print(f"Результат {target}")
 
