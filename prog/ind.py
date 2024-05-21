@@ -28,7 +28,7 @@ def calculate_row_1(x, conditional_var):
 
 
 # 2 Вариант
-def calculate_row_2(conditional_var):
+def calculate_row_2(x, conditional_var):
     def calculate_nextpart(results, x):
         return results[-1] * x
 
