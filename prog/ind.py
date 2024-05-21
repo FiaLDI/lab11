@@ -14,7 +14,7 @@ E = 10e-7
 
 
 # 1 Вариант
-def calculate_row_1(target, x, conditional_var):
+def calculate_row_1(x, conditional_var):
     def calculate_nextpart(results, x, cur):
         return results[-1] * x * math.log(3) / cur
 
@@ -28,7 +28,7 @@ def calculate_row_1(target, x, conditional_var):
 
 
 # 2 Вариант
-def calculate_row_2(target, x, conditional_var):
+def calculate_row_2(conditional_var):
     def calculate_nextpart(results, x):
         return results[-1] * x
 
